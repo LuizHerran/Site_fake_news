@@ -26,7 +26,7 @@ git clone https://github.com/LuizHerran/Site_fake_news.git
 ### 2. Acesse a pasta do projeto
 
 ```bash
-cd Site_fake_news
+cd portal-noticias
 ```
 
 ### 3. Instale as dependências
