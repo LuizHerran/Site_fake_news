@@ -1,362 +1,191 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router';
-import logo from "/favicon.svg";
-import lupa from "/lupa.png";
-import LoginPage from './LoginPage';
-import CadastroPage from './CadastroPage';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router';
 import noticias from '../../data/noticias';
-import autores from '../../data/usuarios';
-import tagss from '../../data/tags';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import usuarios from '../../data/usuarios';
+import tags from '../../data/tags';
 import ufs from '../../data/ufs';
 import cidades from '../../data/cidades';
 
-<BrowserRouter>
-  <Routes>
-    <Route path="/cadastro" element={<CadastroPage />} />
-    <Route path="/login" element={<LoginPage />} /> 
-  </Routes>
-</BrowserRouter>
-
-const placeholderNoticias = noticias.map(item => {
-  const autor = autores.find(a => a.id === item.autorId);
-   const tags = tagss
-  .filter(t => item.tags.includes(t.id))
-  .map(t => t.nome);
-
-  return {
-  id: item.id,
-  title: item.titulo,
-  subtitulo: item.subtitulo,
-  conteudo: item.conteudo,
-  imagemCapa: item.imagemCapa,
-  autorId: autor?.nome ? autor.nome : 'Autor Desconecido',
-  cidadeId: item.cidadeId,
-  tags: tags,
-  publicar: item.publicada,
-  criadoEm: item.criadoEm,
-  atualizadoEm: item.atualizadoEm,
-  visualizacoes: item.visualizacoes
-  }
-});
-
-const tags = tagss.map(tag => tag.nome);
-
 const HomePage: React.FC = () => {
-  const noticia_destaque = noticias.find(a => a.id === a.id);
-  const tags = tagss
-  const location = useLocation();
   const navigate = useNavigate();
+  const [busca, setBusca] = useState('');
   const [ufSelecionada, setUfSelecionada] = useState('');
-  const handleBuscaPorUF = () => {
-    if (!ufSelecionada) {
-      alert('Selecione uma UF');
-      return;
-    }
 
-    const ufEncontrada = ufs.find(uf => uf.sigla === ufSelecionada);
-    if (!ufEncontrada) return;
-
-    const cidadesDaUF = cidades.filter(cidade => cidade.ufId === ufEncontrada.id);
-    const cidadeIds = cidadesDaUF.map(cidade => cidade.id);
-
-    const noticiaEncontrada = noticias.find(noticia => 
-      cidadeIds.includes(noticia.cidadeId)
-    );
-
-    if (noticiaEncontrada) {
-      navigate(`/noticia/${noticiaEncontrada.id}`);
-    } else {
-      alert('Nenhuma notícia encontrada para esta UF');
-    }
+  const parseDate = (dateStr: string) => {
+    const [datePart, timePart] = dateStr.split(' - ');
+    const [day, month, year] = datePart.split('/');
+    const [hour, minute] = timePart.split(':');
+    return new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hour), parseInt(minute));
   };
 
-  useEffect(() => {
-    if (location.hash) {
-      const element = document.querySelector(location.hash);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  }, [location.hash]);
+  const noticiasPublicadas = noticias.filter(n => n.publicada);
+  const destaqueNoticia = noticiasPublicadas[0];
+
+  const handleBuscaUF = () => {
+    if (!ufSelecionada) { alert('Selecione uma UF'); return; }
+    navigate(`/busca/uf/${ufSelecionada}`);
+  };
+
+  const noticiasFiltradas = noticiasPublicadas.filter(n =>
+    busca === '' || n.titulo.toLowerCase().includes(busca.toLowerCase())
+  );
+
+  const getAutor = (autorId: number) => usuarios.find(u => u.id === autorId)?.nome ?? 'Desconhecido';
+  const getTags = (tagIds: number[]) => tags.filter(t => tagIds.includes(t.id));
+  const getCidadeUF = (cidadeId: number) => {
+    const cidade = cidades.find(c => c.id === cidadeId);
+    const uf = ufs.find(u => u.id === cidade?.ufId);
+    return uf ? uf.sigla : '';
+  };
+
+  const headerStyle: React.CSSProperties = {
+    backgroundColor: '#1a1a2e',
+    color: 'white',
+    padding: '0 20px',
+    position: 'sticky',
+    top: 0,
+    zIndex: 100,
+  };
+
+  const navStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '15px 0',
+  };
+
+  const linkStyle: React.CSSProperties = {
+    color: 'white',
+    textDecoration: 'none',
+    marginLeft: '20px',
+    fontSize: '14px',
+  };
 
   return (
-    <div style={{ 
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', 
-      lineHeight: 1.6,
-      color: '#333'
-    }}>
-      {/**Cabeçalho*/}
-      <header>
-        <nav
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px',
-            color: '#7c7c7c',
-            marginBottom: "5px",
-          }}
-        >
-          {/*Lado esquerdo*/}
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <img src={logo} alt="Logo" style={{ width: "30px"}} />
-            <span style={{ margin: '0 8px' }}>›</span>
-            <a href="#ultimas_noticias" style={{ marginLeft: "auto", fontSize: '1.1rem', textDecoration: 'none', color: "#667eea" }}>Noticias </a>
+    <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+      {/* Header */}
+      <header style={headerStyle}>
+        <nav style={navStyle}>
+          <Link to="/" style={{ color: 'white', textDecoration: 'none', fontWeight: 'bold', fontSize: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <img src="/favicon.svg" alt="Portal de Notícias" style={{ width: '26px', height: '26px' }} />
+            Portal de Notícias
+          </Link>
+          <div>
+            <Link to="/" style={linkStyle}>Home</Link>
+            <Link to="/login" style={linkStyle}>Login</Link>
+            <Link to="/cadastro" style={linkStyle}>Cadastro</Link>
           </div>
-          
-          {/**Lado direito */}
-          <div style={{marginLeft: "auto"}}>
-            <Link to='/cadastro' style={{ marginLeft: "auto", fontSize: '1.1rem', textDecoration: 'none', color: "#667eea" }} >Cadastro</Link>
-            <span style={{ margin: '0 8px' }}>|</span>
-            <Link to='/login' style={{ marginLeft: "auto", fontSize: '1.1rem', textDecoration: 'none', color: "#667eea" }} >Login</Link>
-          </div>
-          
         </nav>
       </header>
 
-      {/* Noticia destaque */}
-      <section style={{
-        backgroundImage: noticia_destaque?.imagemCapa ? `url(${noticia_destaque.imagemCapa})` 
-        : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        width: '100%',
-        boxSizing: 'border-box',
-        textAlign: 'center',
-        minHeight: '50vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        border: '5px solid',
-        borderImage: 'linear-gradient(to right, #667eea, #764ba2 100%) 1',
-        backgroundSize: 'cover',
-        borderImageSource: 'linear-gradient(to right, #667eea, #764ba2 100%)',
-        backgroundRepeat: 'no-repeat',                 
-        backgroundPosition: 'center'
-      }}>
-        <h1 style={{ fontSize: '3rem', margin: 0, marginBottom: '1rem' }}>
-          {noticia_destaque?.titulo || 'Bem-vindo ao Portal de Notícias'}
-        </h1>        
-
-        <p style={{ fontSize: '1.5rem', marginBottom: '2rem', maxWidth: '600px', marginLeft: 'auto', marginRight: 'auto' }}>
-          Fique por dentro das últimas notícias do Brasil
-        </p>
-        <Link 
-                    to={`/noticia/${noticia_destaque?.id}`} 
-                    style={{ 
-                      color: '#ffffff', 
-                      textDecoration: 'none',
-                      fontWeight: '500'
-                    }}
-                  >
-                    Ler mais
-                  </Link>
-      </section>
-
-      {/* Barra de Busca */}
-      <section style={{ padding: '3rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
-        {/* Simplified SearchBar with UFSelector */}
-        <div style={{
-          display: 'flex',
-          gap: '1rem',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          alignItems: 'end',
-          marginBottom: '3rem'
-        }}>
-          <input 
-            type="text" 
-            placeholder="Pesquisar notícias.." 
-            style={{ 
-              padding: '1rem', 
-              fontSize: '1.1rem', 
-              border: '1px solid #ddd', 
-              borderRadius: '5px', 
-              flex: 1, 
-              minWidth: '300px',
-              maxWidth: '500px'
-            }} 
+      {/* Hero */}
+      {destaqueNoticia && (
+        <div style={{ position: 'relative', width: '100%', height: '350px', overflow: 'hidden' }}>
+          <img
+            src={destaqueNoticia.imagemCapa}
+            alt={destaqueNoticia.titulo}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/1200x350/1a1a2e/white?text=Notícia+em+Destaque'; }}
           />
-          <select 
+          <div style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0,
+            background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
+            padding: '20px 40px', color: 'white'
+          }}>
+            <h1 style={{ margin: 0, fontSize: '28px' }}>{destaqueNoticia.titulo}</h1>
+            <Link to={`/noticia/${destaqueNoticia.id}`}
+              style={{ color: '#ffd700', textDecoration: 'none', fontWeight: 'bold', marginTop: '10px', display: 'inline-block' }}>
+              Ler mais →
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {/* Busca e filtros */}
+      <div style={{ maxWidth: '1200px', margin: '30px auto', padding: '0 20px' }}>
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
+          <input
+            type="text"
+            placeholder="🔍 Buscar notícias..."
+            value={busca}
+            onChange={e => setBusca(e.target.value)}
+            style={{ flex: 1, minWidth: '200px', padding: '12px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '15px' }}
+          />
+          <select
             value={ufSelecionada}
-            onChange={(e) => setUfSelecionada(e.target.value)}
-            style={{ 
-              padding: '1rem', 
-              fontSize: '1.1rem', 
-              border: '1px solid #ddd', 
-              borderRadius: '5px',
-              minWidth: '150px'
-            }}>
-            <option value="">Selecione UF</option>
-            {ufs.map((uf, index) => (
-              <option key={index} value={uf.sigla}>
-                {uf.sigla}
-              </option>
-            ))}
+            onChange={e => setUfSelecionada(e.target.value)}
+            style={{ padding: '12px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '15px' }}
+          >
+            <option value="">Filtrar por UF</option>
+            {ufs.map(uf => <option key={uf.id} value={uf.sigla}>{uf.sigla} - {uf.nome}</option>)}
           </select>
-          <button 
-            onClick={handleBuscaPorUF}
-            style={{
-              background: '#667eea',
-              color: 'white',
-              padding: '0.8rem',
-              border: 'none',
-              borderRadius: '5px',
-              fontSize: '1.1rem',
-              cursor: 'pointer',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-            <img src={lupa} alt="Lupa" style={{ width: "32px", height: "32px" }} />
+          <button onClick={handleBuscaUF}
+            style={{ padding: '12px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+            Buscar por UF
           </button>
         </div>
 
         {/* Tags */}
-        <div style={{
-          display: 'flex',
-          gap: '1rem',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          marginBottom: '3rem'
-        }}>
-
-          {tags.map((tags) => (
-            
-            <Link 
-              key={tags.id}
-              to={`/noticia/${tags.id}`} 
-              style={{
-                textDecoration: 'none', 
-                color: 'inherit',       
-                display: 'inline-block' 
-              }}
-            >
-              <span 
-                style={{
-                  background: '#f0f0f0',
-                  padding: '0.5rem 1rem',
-                  borderRadius: '20px',
-                  fontSize: '0.9rem',
-                  border: '1px solid #e0e0e0',
-                  display: 'block', 
-                  cursor: 'pointer',
-                  transition: '0.3s'   
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.background = '#e2e2e2'}
-                onMouseLeave={(e) => e.currentTarget.style.background = '#f0f0f0'}
-              >
-                {tags.nome}
-              </span>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '30px' }}>
+          {tags.map(tag => (
+            <Link key={tag.id} to={`/busca/tag/${tag.slug}`}
+              style={{ padding: '6px 14px', backgroundColor: '#007bff', color: 'white', borderRadius: '20px', textDecoration: 'none', fontSize: '13px' }}>
+              {tag.nome}
             </Link>
           ))}
         </div>
-      </section>
 
-      {/* Notícias Grid */}
-      <section style={{ padding: '0 2rem 4rem', maxWidth: '1200px', margin: '0 auto' }}>
-        <div id="ultimas_noticias">
-          <h2 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '2.5rem', color: '#333' }}>
-          Últimas Notícias
-          </h2>
-        </div>
-        
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-          gap: '2rem'
-        }}>
-          {placeholderNoticias.map((noticia) => (
-            <div 
-              key={noticia.id}
-              style={{
-                border: '1px solid #ddd',
-                borderRadius: '10px',
-                overflow: 'hidden',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                transition: 'box-shadow 0.3s ease'
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)';
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-              }}
-            >
-              <div style={{
-                height: '200px',
-                background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#999',
-                fontSize: '1rem'
-              }}>
-                {noticia.imagemCapa ? <img src={noticia.imagemCapa} alt={noticia.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : 'Sem imagem'}
-              </div>
-              <div style={{ padding: '1.5rem' }}>
-                <h3 style={{ 
-                  margin: 0, 
-                  marginBottom: '0.5rem', 
-                  fontSize: '1.3rem',
-                  lineHeight: 1.3
-                }}>
-                  {noticia.title}
-                </h3>
-                <p style={{ color: '#666', marginBottom: '1rem' }}>
-                  {noticia.subtitulo}
-                </p>
-                <p style={{ color: '#666', marginBottom: '1rem' }}>
-                  {noticia.autorId ? `Por Autor ${noticia.autorId}` : 'Autor Desconecido'}
-                  {noticia.tags && noticia.tags.length > 0 ? ` | Tags: ${noticia.tags.join(', ')}` : ''}
-                </p>
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center', 
-                  fontSize: '0.9rem', 
-                  color: '#888' 
-                }}>
-                  <span>{noticia.criadoEm}</span>
-                  <Link 
-                    to={`/noticia/${noticia.id}`} 
-                    style={{ 
-                      color: '#667eea', 
-                      textDecoration: 'none',
-                      fontWeight: '500'
-                    }}
-                  >
-                    Ler mais
-                  </Link>
+        {/* Grid de notícias */}
+        <h2 style={{ marginBottom: '20px', color: '#333' }}>Últimas Notícias</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '25px' }}>
+          {noticiasFiltradas.map(noticia => (
+            <article key={noticia.id} style={{
+              backgroundColor: 'white', borderRadius: '10px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)', overflow: 'hidden'
+            }}>
+              <img
+                src={noticia.imagemCapa}
+                alt={noticia.titulo}
+                style={{ width: '100%', height: '180px', objectFit: 'cover' }}
+                onError={(e) => { (e.target as HTMLImageElement).src = `https://via.placeholder.com/320x180/007bff/white?text=${encodeURIComponent(noticia.titulo.substring(0,15))}`; }}
+              />
+              <div style={{ padding: '16px' }}>
+                <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#333' }}>{noticia.titulo}</h3>
+                <p style={{ margin: '0 0 10px 0', color: '#666', fontSize: '13px' }}>{noticia.subtitulo}</p>
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '10px' }}>
+                  {getTags(noticia.tags).map(tag => (
+                    <Link key={tag.id} to={`/busca/tag/${tag.slug}`}
+                      style={{ padding: '2px 10px', backgroundColor: '#e3f2fd', color: '#1976d2', borderRadius: '12px', fontSize: '11px', textDecoration: 'none' }}>
+                      {tag.nome}
+                    </Link>
+                  ))}
                 </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: '#888' }}>
+                  <span>{getAutor(noticia.autorId)} · {getCidadeUF(noticia.cidadeId)}</span>
+                  <span>{parseDate(noticia.criadoEm).toLocaleDateString('pt-BR')}</span>
+                </div>
+                <Link to={`/noticia/${noticia.id}`}
+                  style={{ display: 'block', marginTop: '12px', textAlign: 'center', padding: '8px', backgroundColor: '#007bff', color: 'white', borderRadius: '6px', textDecoration: 'none', fontSize: '14px' }}>
+                  Ler mais
+                </Link>
               </div>
-            </div>
+            </article>
           ))}
         </div>
-      </section>
+      </div>
 
-      <div>
-          <footer
-            style={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: '#fff',
-              padding: '0rem',
-              textAlign: 'center',
-              marginTop: '1rem'
-            }}
-          >
-            <p>© 2026 Fake_News. Todos os direitos reservados.</p>
-            <a href="#sobre" style={{ marginLeft: "auto", fontSize: '1.1rem', textDecoration: 'none', color: "#ffffff" }}>Sobre </a>
-            <span style={{ margin: '0 8px' }}>|</span>
-            <a href="#contato" style={{ marginLeft: "auto", fontSize: '1.1rem', textDecoration: 'none', color: "#ffffff" }}>Contato</a>
-            <span style={{ margin: '0 8px' }}>|</span>
-            <a href="#termos" style={{ marginLeft: "auto", fontSize: '1.1rem', textDecoration: 'none', color: "#ffffff" }}>Termos de Uso</a>
-          </footer>
+      {/* Footer */}
+      <footer style={{ backgroundColor: '#1a1a2e', color: '#aaa', textAlign: 'center', padding: '30px 20px', marginTop: '50px' }}>
+        <p>&copy; 2025 Portal de Notícias. Todos os direitos reservados.</p>
+        <div style={{ marginTop: '10px' }}>
+          <a href="#" style={{ color: '#aaa', margin: '0 10px', textDecoration: 'none' }}>Sobre</a>
+          <a href="#" style={{ color: '#aaa', margin: '0 10px', textDecoration: 'none' }}>Contato</a>
+          <a href="#" style={{ color: '#aaa', margin: '0 10px', textDecoration: 'none' }}>Termos</a>
         </div>
-
+      </footer>
     </div>
-
-    
-
   );
 };
 

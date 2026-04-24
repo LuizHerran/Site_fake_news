@@ -1,151 +1,166 @@
 import { Link } from 'react-router';
 
 export default function DashboardPage() {
-  // 📊 MOCK DADOS
   const stats = [
-    { label: 'Usuários', value: 1234, link: '/admin/usuarios' },
-    { label: 'Notícias Publicadas', value: 567, link: '/admin/noticias' },
-    { label: 'Rascunhos', value: 45, link: '/admin/noticias' },
-    { label: 'Comentários', value: 89, link: '/admin/comentarios' },
-    { label: 'UFs', value: 27, link: '/admin/ufs' },
-    { label: 'Tags', value: 120, link: '/admin/tags' },
+    { label: 'Usuários', value: '1,234', link: '/admin/usuarios', color: '#4f46e5' },
+    { label: 'Publicadas', value: '567', link: '/admin/noticias', color: '#10b981' },
+    { label: 'Rascunhos', value: '45', link: '/admin/noticias', color: '#f59e0b' },
+    { label: 'Comentários', value: '89', link: '/admin/comentarios', color: '#ec4899' },
+    { label: 'UFs', value: '27', link: '/admin/ufs', color: '#06b6d4' },
+    { label: 'Tags', value: '120', link: '/admin/tags', color: '#8b5cf6' },
   ];
 
   const noticiasPorMes = [10, 25, 18, 30, 22, 40];
 
-  const usuarios = [
-    { id: 1, nome: 'João Silva', email: 'joao@email.com', perfil: 'Admin', data: '01/04/2026' },
-    { id: 2, nome: 'Maria Souza', email: 'maria@email.com', perfil: 'Autor', data: '02/04/2026' },
-    { id: 3, nome: 'Pedro Lima', email: 'pedro@email.com', perfil: 'Editor', data: '03/04/2026' },
-    { id: 4, nome: 'Ana Costa', email: 'ana@email.com', perfil: 'Autor', data: '04/04/2026' },
-    { id: 5, nome: 'Lucas Rocha', email: 'lucas@email.com', perfil: 'Autor', data: '05/04/2026' },
-  ];
+  // Estilos Comuns
+  const cardStyle: React.CSSProperties = {
+    background: '#fff',
+    borderRadius: '16px',
+    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
+    border: '1px solid #f1f5f9',
+    padding: '24px'
+  };
 
-  const noticias = [
-    { id: 1, titulo: 'Notícia A', autor: 'João', status: 'Publicada', data: '01/04/2026' },
-    { id: 2, titulo: 'Notícia B', autor: 'Maria', status: 'Rascunho', data: '02/04/2026' },
-    { id: 3, titulo: 'Notícia C', autor: 'Pedro', status: 'Publicada', data: '03/04/2026' },
-    { id: 4, titulo: 'Notícia D', autor: 'Ana', status: 'Rascunho', data: '04/04/2026' },
-    { id: 5, titulo: 'Notícia E', autor: 'Lucas', status: 'Publicada', data: '05/04/2026' },
-  ];
+  const thStyle: React.CSSProperties = {
+    textAlign: 'left',
+    padding: '12px 8px',
+    fontSize: '12px',
+    color: '#64748b',
+    textTransform: 'uppercase',
+    borderBottom: '1px solid #f1f5f9'
+  };
 
   return (
-    <div style={{ padding: 20, maxWidth: 1200, margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: 30 }}>
-        Dashboard Admin
-      </h1>
+    <div style={{ padding: '40px', backgroundColor: '#f8fafc', minHeight: '100vh', fontFamily: 'system-ui, sans-serif' }}>
+      
+      <header style={{ marginBottom: '40px' }}>
+        <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#1e293b', margin: 0 }}>Visão Geral</h1>
+        <p style={{ color: '#64748b', marginTop: '4px' }}>Bem-vindo ao painel de controle do seu portal.</p>
+      </header>
 
-      {/* 🔹 CARDS */}
+      {/* 🔹 STATS CARDS */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-        gap: 20,
-        marginBottom: 40
+        gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+        gap: '20px',
+        marginBottom: '40px'
       }}>
         {stats.map((s, i) => (
-          <div key={i} style={{
-            background: '#fff',
-            padding: 20,
-            borderRadius: 8,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            textAlign: 'center'
-          }}>
-            <h4>{s.label}</h4>
-            <div style={{ fontSize: 28, fontWeight: 'bold', margin: '10px 0' }}>
+          <div key={i} style={cardStyle}>
+            <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>{s.label}</span>
+            <div style={{ fontSize: '32px', fontWeight: 800, color: s.color, margin: '8px 0' }}>
               {s.value}
             </div>
-            <Link to={s.link} style={{
-              background: '#007bff',
-              color: '#fff',
-              padding: '8px 12px',
-              borderRadius: 4,
-              textDecoration: 'none'
-            }}>
-              Gerenciar
+            <Link to={s.link} style={{ fontSize: '13px', color: '#94a3b8', textDecoration: 'none', fontWeight: 500 }}>
+              Ver detalhes →
             </Link>
           </div>
         ))}
       </div>
 
-      {/* 🔹 GRÁFICO CSS */}
-      <div style={{
-        background: '#fff',
-        padding: 20,
-        borderRadius: 8,
-        marginBottom: 40
-      }}>
-        <h3>Notícias por mês</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', marginBottom: '40px' }}>
+        {/* 🔹 GRÁFICO */}
+        <div style={cardStyle}>
+          <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', color: '#1e293b' }}>Volume de Notícias</h3>
+          <div style={{ display: 'flex', alignItems: 'flex-end', height: '200px', gap: '12px' }}>
+            {noticiasPorMes.map((v, i) => (
+              <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                <div style={{ 
+                  width: '100%', 
+                  background: 'linear-gradient(180deg, #4f46e5 0%, #818cf8 100%)', 
+                  height: `${v * 4}px`, 
+                  borderRadius: '6px 6px 0 0',
+                  transition: 'height 0.3s ease'
+                }} />
+                <span style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 600 }}>Mês {i+1}</span>
+              </div>
+            ))}
+          </div>
+        </div>
 
-        <div style={{
-          display: 'flex',
-          alignItems: 'flex-end',
-          height: 200,
-          gap: 10,
-          marginTop: 20
-        }}>
-          {noticiasPorMes.map((v, i) => (
-            <div key={i} style={{
-              flex: 1,
-              background: '#007bff',
-              height: `${v * 3}px`,
-              borderRadius: 4
-            }} />
-          ))}
+        {/* 🔹 INFO RÁPIDA (Exemplo de UF/Tags mais usadas) */}
+        <div style={{ ...cardStyle, background: '#1e293b', color: '#fff' }}>
+          <h3 style={{ margin: '0 0 20px 0', fontSize: '18px' }}>Status do Sistema</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div>
+              <div style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '4px' }}>Servidor</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%' }} />
+                <span style={{ fontWeight: 600 }}>Operacional</span>
+              </div>
+            </div>
+            <div style={{ height: '1px', background: '#334155' }} />
+            <Link to="/admin/logs" style={{ color: '#818cf8', textDecoration: 'none', fontSize: '14px' }}>Ver logs de atividade →</Link>
+          </div>
         </div>
       </div>
 
-      {/* 🔹 TABELAS */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: 20
-      }}>
-        {/* USUÁRIOS */}
-        <div style={{ background: '#fff', padding: 20, borderRadius: 8 }}>
-          <h3>Últimos Usuários</h3>
-          <table style={{ width: '100%', marginTop: 10 }}>
+      {/* 🔹 TABELAS DE ATIVIDADE RECENTE */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '24px' }}>
+        
+        {/* ÚLTIMOS USUÁRIOS */}
+        <div style={cardStyle}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <h3 style={{ margin: 0, fontSize: '18px' }}>Usuários Recentes</h3>
+            <Link to="/admin/usuarios" style={{ fontSize: '13px', color: '#4f46e5', textDecoration: 'none' }}>Ver todos</Link>
+          </div>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
-                <th>Avatar</th>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Perfil</th>
-                <th>Data</th>
+                <th style={thStyle}>Nome</th>
+                <th style={thStyle}>Perfil</th>
+                <th style={{ ...thStyle, textAlign: 'right' }}>Cadastro</th>
               </tr>
             </thead>
             <tbody>
-              {usuarios.map(u => (
-                <tr key={u.id}>
-                  <td>👤</td>
-                  <td>{u.nome}</td>
-                  <td>{u.email}</td>
-                  <td>{u.perfil}</td>
-                  <td>{u.data}</td>
+              {[
+                { nome: 'João Silva', perfil: 'Admin', data: '01/04' },
+                { nome: 'Maria Souza', perfil: 'Autor', data: '02/04' },
+                { nome: 'Pedro Lima', perfil: 'Editor', data: '03/04' },
+              ].map((u, i) => (
+                <tr key={i}>
+                  <td style={{ padding: '12px 8px', fontSize: '14px', fontWeight: 500 }}>{u.nome}</td>
+                  <td style={{ padding: '12px 8px' }}>
+                    <span style={{ fontSize: '11px', background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px' }}>{u.perfil}</span>
+                  </td>
+                  <td style={{ padding: '12px 8px', textAlign: 'right', fontSize: '13px', color: '#64748b' }}>{u.data}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        {/* NOTÍCIAS */}
-        <div style={{ background: '#fff', padding: 20, borderRadius: 8 }}>
-          <h3>Últimas Notícias</h3>
-          <table style={{ width: '100%', marginTop: 10 }}>
+        {/* ÚLTIMAS NOTÍCIAS */}
+        <div style={cardStyle}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <h3 style={{ margin: 0, fontSize: '18px' }}>Últimas Notícias</h3>
+            <Link to="/admin/noticias" style={{ fontSize: '13px', color: '#4f46e5', textDecoration: 'none' }}>Ver todas</Link>
+          </div>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
-                <th>Título</th>
-                <th>Autor</th>
-                <th>Status</th>
-                <th>Data</th>
+                <th style={thStyle}>Título</th>
+                <th style={thStyle}>Status</th>
+                <th style={{ ...thStyle, textAlign: 'right' }}>Data</th>
               </tr>
             </thead>
             <tbody>
-              {noticias.map(n => (
-                <tr key={n.id}>
-                  <td>{n.titulo}</td>
-                  <td>{n.autor}</td>
-                  <td>{n.status}</td>
-                  <td>{n.data}</td>
+              {[
+                { titulo: 'Nova Tecnologia', status: 'Publicada', data: '05/04' },
+                { titulo: 'Evento Local', status: 'Rascunho', data: '04/04' },
+                { titulo: 'Entrevista', status: 'Publicada', data: '03/04' },
+              ].map((n, i) => (
+                <tr key={i}>
+                  <td style={{ padding: '12px 8px', fontSize: '14px', fontWeight: 500 }}>{n.titulo}</td>
+                  <td style={{ padding: '12px 8px' }}>
+                    <div style={{ 
+                      width: '8px', height: '8px', borderRadius: '50%', 
+                      display: 'inline-block', marginRight: '6px',
+                      background: n.status === 'Publicada' ? '#10b981' : '#f59e0b' 
+                    }} />
+                    <span style={{ fontSize: '13px' }}>{n.status}</span>
+                  </td>
+                  <td style={{ padding: '12px 8px', textAlign: 'right', fontSize: '13px', color: '#64748b' }}>{n.data}</td>
                 </tr>
               ))}
             </tbody>

@@ -1,140 +1,112 @@
 import React from 'react';
 import { useParams, Link } from 'react-router';
-
-type Params = {
-  tag: string;
-};
-
-interface NewsItem {
-  id: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  tags: string[];
-}
-
-const fakeNews: NewsItem[] = [
-  {
-    id: '1',
-    title: 'Nova tecnologia revoluciona o mercado',
-    excerpt: 'Uma inovação tecnológica está mudando a forma como interagimos com dispositivos...',
-    date: '2024-01-15',
-    tags: ['tecnologia']
-  },
-  {
-    id: '2',
-    title: 'Vitória histórica no futebol',
-    excerpt: 'O time nacional conquista o campeonato após anos de luta...',
-    date: '2024-01-14',
-    tags: ['esportes', 'futebol']
-  },
-  {
-    id: '3',
-    title: 'Avanço em IA e inovação',
-    excerpt: 'Inteligência artificial promete soluções para problemas complexos...',
-    date: '2024-01-13',
-    tags: ['tecnologia', 'inovacao']
-  },
-  {
-    id: '4',
-    title: 'Debate político agita o congresso',
-    excerpt: 'Políticos discutem reformas importantes para o país...',
-    date: '2024-01-12',
-    tags: ['politica']
-  },
-  {
-    id: '5',
-    title: 'Gadgets do futuro',
-    excerpt: 'Os próximos lançamentos em tecnologia móvel...',
-    date: '2024-01-11',
-    tags: ['tecnologia']
-  },
-  {
-    id: '6',
-    title: 'Maratona internacional',
-    excerpt: 'Atletas de elite competem pela medalha de ouro...',
-    date: '2024-01-10',
-    tags: ['esportes']
-  }
-];
+import noticias from '../../data/noticias';
+import tags from '../../data/tags';
+import usuarios from '../../data/usuarios';
 
 const BuscaPorTagPage: React.FC = () => {
-  const { tag } = useParams<Params>();
+  const { slug } = useParams<{ slug: string }>();
+  const tag = tags.find(t => t.slug === slug);
+  const noticiasDaTag = noticias.filter(n => n.publicada && tag && n.tags.includes(tag.id));
+  const getAutor = (id: number) => usuarios.find(u => u.id === id)?.nome ?? 'Desconhecido';
 
-  const filteredNews = fakeNews.filter((news) => news.tags.includes(tag || ''));
+  const headerStyle: React.CSSProperties = {
+    backgroundColor: '#1a1a2e',
+    color: 'white',
+    padding: '0 20px',
+    position: 'sticky',
+    top: 0,
+    zIndex: 100,
+  };
+
+  const navStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '15px 0',
+  };
+
+  const linkStyle: React.CSSProperties = {
+    color: 'white',
+    textDecoration: 'none',
+    marginLeft: '20px',
+    fontSize: '14px',
+  };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      {/* Breadcrumb */}
-      <nav style={{ marginBottom: '20px', fontSize: '14px' }}>
-        <Link to="/" style={{ color: '#007bff', textDecoration: 'none', marginRight: '5px' }}>
-          Home
-        </Link>
-        {' > '}
-        <span style={{ color: '#6c757d' }}>Busca por Tag: <strong>{tag}</strong></span>
-      </nav>
+    <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+      <header style={headerStyle}>
+        <nav style={navStyle}>
+          <Link to="/" style={{ color: 'white', textDecoration: 'none', fontWeight: 'bold', fontSize: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <img src="/favicon.svg" alt="Portal de Notícias" style={{ width: '26px', height: '26px' }} />
+            Portal de Notícias
+          </Link>
+          <div>
+            <Link to="/" style={linkStyle}>Home</Link>
+            <Link to="/login" style={linkStyle}>Login</Link>
+            <Link to="/cadastro" style={linkStyle}>Cadastro</Link>
+          </div>
+        </nav>
+      </header>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px 20px 40px' }}>
+        <nav style={{ marginBottom: '20px', fontSize: '14px' }}>
+          <Link to="/" style={{ color: '#007bff', textDecoration: 'none' }}>Home</Link>
+          {' > '}
+          <strong>{tag?.nome ?? slug}</strong>
+        </nav>
 
-      {/* Title */}
-      <h1 style={{ marginBottom: '30px', color: '#333' }}>
-        Notícias sobre &quot;{tag}&quot;
-      </h1>
+      <div style={{ display: 'inline-block', padding: '8px 20px', backgroundColor: '#007bff', color: 'white', borderRadius: '20px', fontSize: '18px', fontWeight: 'bold', marginBottom: '30px' }}>
+        #{tag?.nome ?? slug}
+      </div>
 
-      {/* Grid de notícias */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-          gap: '20px',
-        }}
-      >
-        {filteredNews.length > 0 ? (
-          filteredNews.map((news) => (
-            <article
-              key={news.id}
-              style={{
-                border: '1px solid #ddd',
-                borderRadius: '8px',
-                padding: '20px',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                backgroundColor: '#fff',
-              }}
-            >
-              <h3 style={{ margin: '0 0 10px 0', color: '#333', fontSize: '1.2em' }}>
-                {news.title}
-              </h3>
-              <p style={{ margin: '0 0 10px 0', color: '#666', lineHeight: '1.5' }}>
-                {news.excerpt}
-              </p>
-              <small style={{ color: '#999', fontSize: '0.9em' }}>
-                {news.date}
-              </small>
-              <div style={{ marginTop: '15px' }}>
-                <Link
-                  to={`/noticia/${news.id}`}
-                  style={{
-                    backgroundColor: '#007bff',
-                    color: 'white',
-                    padding: '10px 20px',
-                    textDecoration: 'none',
-                    borderRadius: '4px',
-                    fontSize: '0.95em',
-                    transition: 'background-color 0.2s',
-                  }}
-                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#0056b3')}
-                  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#007bff')}
-                >
+      <p style={{ color: '#666', marginBottom: '20px' }}>{noticiasDaTag.length} notícia(s) encontrada(s)</p>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px', marginBottom: '30px' }}>
+        {noticiasDaTag.length === 0 ? (
+          <p style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#999', padding: '40px' }}>
+            Nenhuma notícia encontrada para a tag "{slug}".
+          </p>
+        ) : (
+          noticiasDaTag.map(noticia => (
+            <article key={noticia.id} style={{ border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden', backgroundColor: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+              <img src={noticia.imagemCapa} alt={noticia.titulo}
+                style={{ width: '100%', height: '160px', objectFit: 'cover' }}
+                onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x160'; }}
+              />
+              <div style={{ padding: '16px' }}>
+                <h3 style={{ margin: '0 0 8px 0', color: '#333', fontSize: '16px' }}>{noticia.titulo}</h3>
+                <p style={{ margin: '0 0 10px 0', color: '#666', fontSize: '13px' }}>{getAutor(noticia.autorId)} · {new Date(noticia.criadoEm).toLocaleDateString('pt-BR')}</p>
+                <Link to={`/noticia/${noticia.id}`}
+                  style={{ display: 'inline-block', backgroundColor: '#007bff', color: 'white', padding: '8px 16px', textDecoration: 'none', borderRadius: '5px', fontSize: '13px' }}>
                   Ler mais
                 </Link>
               </div>
             </article>
           ))
-        ) : (
-          <p style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#999', fontSize: '1.1em', padding: '40px' }}>
-            Nenhuma notícia encontrada para a tag &quot;{tag}&quot;.
-          </p>
         )}
       </div>
+
+      <h3 style={{ marginBottom: '10px', color: '#333' }}>Tags Relacionadas</h3>
+      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        {tags.filter(t => t.slug !== slug).map(t => (
+          <Link key={t.id} to={`/busca/tag/${t.slug}`}
+            style={{ padding: '6px 16px', backgroundColor: '#e3f2fd', color: '#1976d2', borderRadius: '20px', textDecoration: 'none', fontSize: '13px' }}>
+            {t.nome}
+          </Link>
+        ))}
+      </div>
+      <footer style={{ backgroundColor: '#1a1a2e', color: '#aaa', textAlign: 'center', padding: '30px 20px', marginTop: '50px' }}>
+        <p>&copy; 2025 Portal de Notícias. Todos os direitos reservados.</p>
+        <div style={{ marginTop: '10px' }}>
+          <a href="#" style={{ color: '#aaa', margin: '0 10px', textDecoration: 'none' }}>Sobre</a>
+          <a href="#" style={{ color: '#aaa', margin: '0 10px', textDecoration: 'none' }}>Contato</a>
+          <a href="#" style={{ color: '#aaa', margin: '0 10px', textDecoration: 'none' }}>Termos</a>
+        </div>
+      </footer>
     </div>
+  </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import type { FC, CSSProperties } from 'react';
-import { Link } from 'react-router-dom'; // ✅ corrigido
+import { Link } from 'react-router'; // ✅ corrigido
 
 const styles: Record<string, CSSProperties> = {
   page: {
@@ -184,7 +184,7 @@ const PerfilAutorPage: FC = () => {
           </ul>
 
           {/* ✅ CORRIGIDO */}
-          <Link to="/autor/nova-noticia" style={styles.createLink}>
+          <Link to="/autor/noticias/nova" style={styles.createLink}>
             Criar Nova Notícia
           </Link>
         </div>

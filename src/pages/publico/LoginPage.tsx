@@ -1,24 +1,41 @@
 import React from 'react';
-import logo from "/favicon.svg";
-import { BrowserRouter, Link, Route, Routes } from 'react-router';
-import CadastroPage from './CadastroPage';
-import HomePage from './HomePage';
+import { Link, useNavigate } from 'react-router';
 
 const LoginPage: React.FC = () => {
-  <BrowserRouter>
-      <Routes>
-      <Route path="/cadastro" element={<CadastroPage />} />
-      <Route path="/Home" element={<HomePage />} /> 
-      </Routes>
-  </BrowserRouter>
+  const navigate = useNavigate();
+
+  const headerStyle: React.CSSProperties = {
+    backgroundColor: '#1a1a2e',
+    color: 'white',
+    padding: '0 20px',
+    position: 'sticky',
+    top: 0,
+    zIndex: 100,
+  };
+
+  const navStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '15px 0',
+  };
+
+  const navLinkStyle: React.CSSProperties = {
+    color: 'white',
+    textDecoration: 'none',
+    marginLeft: '20px',
+    fontSize: '14px',
+  };
 
   const containerStyle: React.CSSProperties = {
-    minHeight: '100vh',
+    flex: 1,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#f5f5f5',
-    padding: '20px',
+    padding: '40px 20px',
     fontFamily: 'Arial, sans-serif',
   };
 
@@ -32,7 +49,7 @@ const LoginPage: React.FC = () => {
   };
 
   const titleStyle: React.CSSProperties = {
-    textAlign: 'center' as const,
+    textAlign: 'center',
     marginBottom: '30px',
     color: '#333',
     fontSize: '28px',
@@ -45,22 +62,16 @@ const LoginPage: React.FC = () => {
     border: '1px solid #ddd',
     borderRadius: '5px',
     fontSize: '16px',
-    boxSizing: 'border-box' as const,
+    boxSizing: 'border-box',
   };
 
   const checkboxLabelStyle: React.CSSProperties = {
     display: 'flex',
-    alignItems: 'center' as const,
+    alignItems: 'center',
     marginBottom: '20px',
-    cursor: 'pointer' as const,
+    cursor: 'pointer',
     fontSize: '14px',
     color: '#666',
-  };
-
-  const checkboxInputStyle: React.CSSProperties = {
-    marginRight: '8px',
-    width: '18px',
-    height: '18px',
   };
 
   const buttonStyle: React.CSSProperties = {
@@ -71,19 +82,19 @@ const LoginPage: React.FC = () => {
     border: 'none',
     borderRadius: '5px',
     fontSize: '16px',
-    cursor: 'pointer' as const,
+    cursor: 'pointer',
     marginBottom: '20px',
   };
 
   const linksStyle: React.CSSProperties = {
-    textAlign: 'center' as const,
+    textAlign: 'center',
     marginBottom: '30px',
   };
 
   const linkStyle: React.CSSProperties = {
     color: '#007bff',
-    textDecoration: 'none' as const,
-    fontWeight: '500' as const,
+    textDecoration: 'none',
+    fontWeight: '500',
   };
 
   const hrStyle: React.CSSProperties = {
@@ -92,92 +103,89 @@ const LoginPage: React.FC = () => {
     borderTop: '1px solid #eee',
   };
 
-  const quickAccessTitleStyle: React.CSSProperties = {
-    textAlign: 'center' as const,
-    marginBottom: '20px',
-    color: '#666',
-    fontSize: '18px',
+  const quickAccessBoxStyle: React.CSSProperties = {
+    border: '2px solid red',
+    backgroundColor: 'white',
+    padding: '20px',
+    borderRadius: '8px',
   };
 
-  const quickAccessStyle: React.CSSProperties = {
-    textAlign: 'center' as const,
+  const quickAccessTitleStyle: React.CSSProperties = {
+    textAlign: 'center',
+    marginBottom: '20px',
+    color: '#666',
+    fontSize: '16px',
+  };
+
+  const gridStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '10px',
   };
 
   const redButtonStyle: React.CSSProperties = {
-    display: 'block',
-    width: '100%',
-    marginBottom: '10px',
     padding: '12px',
-    backgroundColor: '#dc3545',
-    color: 'white',
-    textDecoration: 'none' as const,
+    backgroundColor: 'white',
+    color: 'red',
+    border: '2px solid red',
     borderRadius: '5px',
-    fontWeight: 'bold' as const,
-    fontSize: '16px',
-    cursor: 'pointer' as const,
-    border: 'none',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    cursor: 'pointer',
   };
 
   return (
-
-    <div style={containerStyle}>
-      <div style={cardStyle}>
-        <h1 style={titleStyle}>Login</h1>
-        <form>
-          <input
-            type="email"
-            placeholder="Email"
-            style={inputStyle}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Senha"
-            style={inputStyle}
-            required
-          />
+    <div style={{ fontFamily: 'Arial, sans-serif', backgroundColor: '#f5f5f5', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <header style={headerStyle}>
+        <nav style={navStyle}>
+          <Link to="/" style={{ color: 'white', textDecoration: 'none', fontWeight: 'bold', fontSize: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <img src="/favicon.svg" alt="Portal de Notícias" style={{ width: '26px', height: '26px' }} />
+            Portal de Notícias
+          </Link>
+          <div>
+            <Link to="/" style={navLinkStyle}>Home</Link>
+            <Link to="/login" style={navLinkStyle}>Login</Link>
+            <Link to="/cadastro" style={navLinkStyle}>Cadastro</Link>
+          </div>
+        </nav>
+      </header>
+      <div style={containerStyle}>
+        <div style={cardStyle}>
+          <h1 style={titleStyle}>Login</h1>
+          <form onSubmit={(e) => e.preventDefault()}>
+          <input type="email" placeholder="E-mail" style={inputStyle} />
+          <input type="password" placeholder="Senha" style={inputStyle} />
           <label style={checkboxLabelStyle}>
-            <input type="checkbox" style={checkboxInputStyle} />
+            <input type="checkbox" style={{ marginRight: '8px' }} />
             Lembrar-me
           </label>
-          <button type="submit" style={buttonStyle}>
-            Entrar
-          </button>
+          <button type="submit" style={buttonStyle}>Entrar</button>
         </form>
         <div style={linksStyle}>
-          <Link to="/cadastro" style={linkStyle}>
-            Cadastre-se
-          </Link>{' '}
-          |
-          {' '}
-          <Link to="/lembrar-senha" style={linkStyle}>
-            Esqueceu a senha?
-          </Link>
+          <Link to="/lembrar-senha" style={linkStyle}>Esqueci minha senha</Link>
+          {' | '}
+          <Link to="/cadastro" style={linkStyle}>Não tem conta? Cadastre-se</Link>
         </div>
         <hr style={hrStyle} />
-        
-        <div style={quickAccessStyle}>
-          <h3 style={quickAccessTitleStyle}>
-            Acesso Rápido (Desenvolvimento)
-          </h3>
-
-          <Link to="/leitor/perfil" style={redButtonStyle}>
-            LEITOR
-          </Link>
-
-          <Link to="/autor/minhas-noticias" style={redButtonStyle}>
-            AUTOR
-          </Link>
-
-          <Link to="/editor/painel" style={redButtonStyle}>
-            EDITOR
-          </Link>
-
-          <Link to="/admin/dashboard" style={redButtonStyle}>
-            SUPERADMIN
-          </Link>
+        <div style={quickAccessBoxStyle}>
+          <p style={quickAccessTitleStyle}>Acesso Rápido (Desenvolvimento)</p>
+          <div style={gridStyle}>
+            <button style={redButtonStyle} onClick={() => navigate('/leitor/perfil')}>LEITOR</button>
+            <button style={redButtonStyle} onClick={() => navigate('/autor/noticias')}>AUTOR</button>
+            <button style={redButtonStyle} onClick={() => navigate('/editor/painel')}>EDITOR</button>
+            <button style={redButtonStyle} onClick={() => navigate('/admin/dashboard')}>SUPERADMIN</button>
+          </div>
+        </div>
         </div>
       </div>
+      <footer style={{ backgroundColor: '#1a1a2e', color: '#aaa', textAlign: 'center', padding: '30px 20px', marginTop: 'auto' }}>
+        <p>&copy; 2025 Portal de Notícias. Todos os direitos reservados.</p>
+        <div style={{ marginTop: '10px' }}>
+          <a href="#" style={{ color: '#aaa', margin: '0 10px', textDecoration: 'none' }}>Sobre</a>
+          <a href="#" style={{ color: '#aaa', margin: '0 10px', textDecoration: 'none' }}>Contato</a>
+          <a href="#" style={{ color: '#aaa', margin: '0 10px', textDecoration: 'none' }}>Termos</a>
+        </div>
+      </footer>
     </div>
   );
 };

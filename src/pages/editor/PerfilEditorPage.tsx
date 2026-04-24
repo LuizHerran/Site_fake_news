@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 const PerfilEditorPage: React.FC = () => {
   const [editando, setEditando] = useState(false);
@@ -55,7 +55,7 @@ const PerfilEditorPage: React.FC = () => {
         {/* Avatar */}
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <img
-            src="https://via.placeholder.com/120"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQERKpDn7ceXpFwpcuLMEguHo5u6s25IFwX_w&s"
             alt="avatar"
             style={{
               borderRadius: '50%',

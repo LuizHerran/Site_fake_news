@@ -1,6 +1,31 @@
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 const PainelEditorPage = () => {
+  const headerStyle: React.CSSProperties = {
+    backgroundColor: '#1a1a2e',
+    color: '#fff',
+    padding: '16px 32px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+  };
+
+  const navStyle: React.CSSProperties = {
+    display: 'flex',
+    gap: '24px',
+    alignItems: 'center'
+  };
+
+  const navLinkStyle: React.CSSProperties = {
+    color: '#fff',
+    textDecoration: 'none',
+    fontSize: '14px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    cursor: 'pointer'
+  };
 
   const noticiasPendentes = [
     { id: 1, titulo: 'Notícia 1', autor: 'Autor A', data: '01/04/2026' },
@@ -19,103 +44,111 @@ const PainelEditorPage = () => {
   ];
 
   return (
-    <div style={{
-      display: 'flex',
-      minHeight: '100vh',
-      fontFamily: 'Inter, Arial, sans-serif',
-      backgroundColor: '#f1f5f9'
-    }}>
-
-      {/* SIDEBAR */}
-      <aside style={{
-        width: '240px',
-        background: '#0f172a',
-        color: '#fff',
-        padding: '24px'
-      }}>
-        <h2 style={{ marginBottom: '30px', fontSize: '20px' }}>🧾 Editor</h2>
-
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <Link to="/editor/painel" style={linkStyle}>Painel</Link>
-          <Link to="/editor/perfil" style={linkStyle}>Perfil</Link>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', fontFamily: 'Inter, Arial, sans-serif', backgroundColor: '#f1f5f9' }}>
+      <header style={headerStyle}>
+        <nav style={navStyle}>
+          <Link to="/" style={{ ...navLinkStyle, fontSize: '16px', fontWeight: 'bold', color: 'white' }}>
+            <img src="/favicon.svg" alt="Portal de Notícias" style={{ width: '26px', height: '26px' }} />
+            Portal de Notícias
+          </Link>
+          <Link to="/" style={navLinkStyle}>Home</Link>
+          <Link to="/editor/painel" style={navLinkStyle}>Painel</Link>
+          <Link to="/editor/perfil" style={navLinkStyle}>Perfil</Link>
         </nav>
-      </aside>
+      </header>
 
-      {/* CONTEÚDO */}
-      <main style={{ flex: 1, padding: '32px' }}>
+      <div style={{ display: 'flex', flex: 1 }}>
+        {/* SIDEBAR */}
+        <aside style={{
+          width: '240px',
+          background: '#0f172a',
+          color: '#fff',
+          padding: '24px'
+        }}>
+          <h2 style={{ marginBottom: '30px', fontSize: '20px' }}>🧾 Editor</h2>
 
-        <h1 style={{ fontSize: '28px', marginBottom: '24px' }}>
-          Painel do Editor
-        </h1>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <Link to="/editor/painel" style={linkStyle}>Painel</Link>
+            <Link to="/editor/perfil" style={linkStyle}>Perfil</Link>
+          </nav>
+        </aside>
 
-        {/* CARDS */}
-        <div style={cardsContainer}>
-          <Card label="Publicadas" valor={12} />
-          <Card label="Rascunhos" valor={5} />
-          <Card label="Comentários" valor={3} />
-          <Card label="Autores" valor={8} />
-        </div>
+        {/* CONTEÚDO */}
+        <main style={{ flex: 1, padding: '32px' }}>
 
-        {/* TABELA */}
-        <Section title="Notícias Pendentes">
-          <table style={tableStyle}>
-            <thead>
-              <tr>
-                <th style={thTdStyle}>Título</th>
-                <th style={thTdStyle}>Autor</th>
-                <th style={thTdStyle}>Data</th>
-                <th style={{ ...thTdStyle, textAlign: 'center' }}>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {noticiasPendentes.map(n => (
-                <tr key={n.id}>
-                  <td style={thTdStyle}>{n.titulo}</td>
-                  <td style={thTdStyle}>{n.autor}</td>
-                  <td style={thTdStyle}>{n.data}</td>
-                  <td style={thTdStyle}>
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}>
-                      <button style={btnSuccess}>Publicar</button>
-                      <button style={btnDanger}>Rejeitar</button>
-                    </div>
-                  </td>
+          <h1 style={{ fontSize: '28px', marginBottom: '24px' }}>
+            Painel do Editor
+          </h1>
+
+          {/* CARDS */}
+          <div style={cardsContainer}>
+            <Card label="Publicadas" valor={12} />
+            <Card label="Rascunhos" valor={5} />
+            <Card label="Comentários" valor={3} />
+            <Card label="Autores" valor={8} />
+          </div>
+
+          {/* TABELA */}
+          <Section title="Notícias Pendentes">
+            <table style={tableStyle}>
+              <thead>
+                <tr>
+                  <th style={thTdStyle}>Título</th>
+                  <th style={thTdStyle}>Autor</th>
+                  <th style={thTdStyle}>Data</th>
+                  <th style={{ ...thTdStyle, textAlign: 'center' }}>Ações</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </Section>
+              </thead>
+              <tbody>
+                {noticiasPendentes.map(n => (
+                  <tr key={n.id}>
+                    <td style={thTdStyle}>{n.titulo}</td>
+                    <td style={thTdStyle}>{n.autor}</td>
+                    <td style={thTdStyle}>{n.data}</td>
+                    <td style={thTdStyle}>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}>
+                        <button style={btnSuccess}>Publicar</button>
+                        <button style={btnDanger}>Rejeitar</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Section>
 
-        {/* COMENTÁRIOS */}
-        <Section title="Comentários para Moderar">
-          {comentarios.map(c => (
-            <div key={c.id} style={commentBox}>
-              <p>{c.texto}</p>
-              <div>
-                <button style={btnSuccess}>Aprovar</button>
-                <button style={btnDanger}>Rejeitar</button>
+          {/* COMENTÁRIOS */}
+          <Section title="Comentários para Moderar">
+            {comentarios.map(c => (
+              <div key={c.id} style={commentBox}>
+                <p>{c.texto}</p>
+                <div>
+                  <button style={btnSuccess}>Aprovar</button>
+                  <button style={btnDanger}>Rejeitar</button>
+                </div>
               </div>
-            </div>
-          ))}
-        </Section>
+            ))}
+          </Section>
 
-        {/* GRÁFICO */}
-        <Section title="Notícias por Tag">
-          {tags.map(t => (
-            <div key={t.nome} style={{ marginBottom: '12px' }}>
-              <span style={{ fontSize: '14px' }}>{t.nome}</span>
-              <div style={barContainer}>
-                <div style={{ ...barFill, width: `${t.valor}%` }} />
+          {/* GRÁFICO */}
+          <Section title="Notícias por Tag">
+            {tags.map(t => (
+              <div key={t.nome} style={{ marginBottom: '12px' }}>
+                <span style={{ fontSize: '14px' }}>{t.nome}</span>
+                <div style={barContainer}>
+                  <div style={{ ...barFill, width: `${t.valor}%` }} />
+                </div>
               </div>
-            </div>
-          ))}
-        </Section>
+            ))}
+          </Section>
 
-      </main>
+        </main>
+      </div>
     </div>
   );
 };

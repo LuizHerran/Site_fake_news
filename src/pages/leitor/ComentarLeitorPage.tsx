@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router';
 
 const ComentarLeitorPage: React.FC = () => {
-  const { idNoticia } = useParams<{ idNoticia: string }>();
+  const { noticiaId } = useParams<{ noticiaId: string }>();
 
   const [comentario, setComentario] = useState('');
   const [enviado, setEnviado] = useState(false);
@@ -42,7 +42,7 @@ const ComentarLeitorPage: React.FC = () => {
         {enviado ? (
           <>
             <p>Comentário enviado com sucesso!</p>
-            <Link to={`/noticia/${idNoticia}`}>
+            <Link to={`/noticia/${noticiaId}`}>
               Voltar para a Notícia
             </Link>
           </>

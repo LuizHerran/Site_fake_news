@@ -191,7 +191,7 @@ const NovaNoticiaPage: React.FC = () => {
 
         <div style={styles.buttons}>
           <Link 
-            to="/autor/minhas-noticias"
+            to="/autor/noticias"
             style={{ ...styles.button, ...styles.voltarBtn }}
           >
             Voltar

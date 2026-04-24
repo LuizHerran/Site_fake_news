@@ -31,7 +31,7 @@ import FormCidadePage from './pages/admin/FormCidadePage';
 import CrudTagsPage from './pages/admin/CrudTagsPage';
 import FormTagPage from './pages/admin/FormTagPage';
 import CrudPerfisPage from './pages/admin/CrudPerfisPage';
-import CrudNoticiasPage from './pages/admin/CrudCidadesPage';
+import CrudNoticiasPage from './pages/admin/CrudNoticiasPage';
 import FormNoticiaAdminPage from './pages/admin/FormNoticiaAdminPage';
 import CrudUsuariosPage from './pages/admin/CrudUsuariosPage';
 import FormUsuarioPage from './pages/admin/FormUsuarioPage';
@@ -39,24 +39,33 @@ import GerenciarComentariosPage from './pages/admin/GerenciarComentariosPage';
 import NotFoundPage from './pages/NotFound';
 
 const routes: RouteObject[] = [
+  // PÚBLICO
   { path: '/', element: <HomePage /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/cadastro', element: <CadastroPage /> },
   { path: '/lembrar-senha', element: <LembrarSenhaPage /> },
+  { path: '/busca/uf/:sigla', element: <BuscaPorUFPage /> },
+  { path: '/busca/tag/:slug', element: <BuscaPorTagPage /> },
   { path: '/noticia/:id', element: <DetalheNoticiaPage /> },
-  { path: '/busca/uf/:uf', element: <BuscaPorUFPage /> },
-  { path: '/busca/tag/:tag', element: <BuscaPorTagPage /> },
+
+  // LEITOR
   { path: '/leitor/perfil', element: <PerfilLeitorPage /> },
-  { path: '/leitor/comentar/:idNoticia', element: <ComentarLeitorPage /> },
+  { path: '/leitor/comentar/:noticiaId', element: <ComentarLeitorPage /> },
+
+  // AUTOR
   { path: '/autor/perfil', element: <PerfilAutorPage /> },
-  { path: '/autor/minhas-noticias', element: <MinhasNoticiasPage /> },
-  { path: '/autor/nova-noticia', element: <NovaNoticiaPage /> },
-  { path: '/autor/editar/:id', element: <EditarNoticiaPage /> },
-  { path: '/autor/comentar/:idNoticia', element: <ComentarAutorPage /> },
+  { path: '/autor/comentar/:noticiaId', element: <ComentarAutorPage /> },
+  { path: '/autor/noticias', element: <MinhasNoticiasPage /> },
+  { path: '/autor/noticias/nova', element: <NovaNoticiaPage /> },
+  { path: '/autor/noticias/:id/editar', element: <EditarNoticiaPage /> },
+
+  // EDITOR
   { path: '/editor/painel', element: <PainelEditorPage /> },
   { path: '/editor/perfil', element: <PerfilEditorPage /> },
   { path: '/editor/publicar/:id', element: <PublicarDespublicarPage /> },
   { path: '/editor/noticias/:id/editar', element: <EditarQualquerNoticiaPage /> },
+
+  // SUPERADMIN
   { path: '/admin/dashboard', element: <DashboardPage /> },
   { path: '/admin/ufs', element: <CrudUFPage /> },
   { path: '/admin/ufs/nova', element: <FormUFPage /> },
@@ -69,17 +78,17 @@ const routes: RouteObject[] = [
   { path: '/admin/tags/:id/editar', element: <FormTagPage /> },
   { path: '/admin/perfis', element: <CrudPerfisPage /> },
   { path: '/admin/noticias', element: <CrudNoticiasPage /> },
-  { path: '/admin/noticias/nova', element: <FormNoticiaAdminPage /> },
   { path: '/admin/noticias/:id/editar', element: <FormNoticiaAdminPage /> },
   { path: '/admin/usuarios', element: <CrudUsuariosPage /> },
-  { path: '/admin/usuarios/nova', element: <FormUsuarioPage /> },
   { path: '/admin/usuarios/:id/editar', element: <FormUsuarioPage /> },
   { path: '/admin/comentarios', element: <GerenciarComentariosPage /> },
-  { path: '*', element: <NotFoundPage /> }
+
+  // 404
+  { path: '*', element: <NotFoundPage /> },
 ];
 
 const router = createBrowserRouter(routes);
 
-export default function App() {
+export default function Router() {
   return <RouterProvider router={router} />;
 }
